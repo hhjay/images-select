@@ -13,9 +13,21 @@
 <script>
     import 'less/lib.less';
     import $ from 'jquery';
+    import Bus from '@/common/bus.js';
     export default {
         name: "g-upload",
+        mounted(){
+            this.busInit();
+        },
+        beforeDestroy(){
+            Bus.$off("reset-upload-img");
+        },
         methods: {
+            busInit(){
+                Bus.$on("reset-upload-img", ()=>{
+                    this.$refs.input.click();
+                });
+            },
             data(){
                 return {
                     fileName: "file",

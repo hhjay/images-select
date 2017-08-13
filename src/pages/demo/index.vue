@@ -6,6 +6,7 @@
 </template>
 <script>
     import 'less/demo.less';
+    import Bus from '@/common/bus.js';
     export default {
         data() {
             return {

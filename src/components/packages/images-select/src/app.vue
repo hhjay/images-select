@@ -7,7 +7,7 @@
                     :src="value.url" alt="裁剪图片"
                  />
                 <div class="item-setting">
-                    <button class="setting-btn">更换</button>
+                    <button class="setting-btn" @click="resetImg">更换</button>
                     <button class="setting-btn">删除</button>
                     <button class="setting-btn" @click="fixThumbnailImg">裁剪</button>
                 </div>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="footer">
                     <button class="is-button" @click="showDialog = false">取消</button>
-                    <button class="is-button">重选</button>
+                    <button class="is-button" @click="resetImg">重选</button>
                     <button class="is-button">确认使用</button>
                 </div>
             </div>
@@ -60,6 +60,7 @@
     </div>
 </template>
 <script>
+    import Bus from '@/common/bus.js';
     import $ from 'jquery';
     export default {
         name: "images-select",
@@ -158,8 +159,23 @@
                     let slider = $(this.$refs.sliderBar);
 
                     // TODO 保留N位数 step 可以在此设置
-                    this.sliderVal = ((evt.pageX - slider.offset().left) * 100 / slider.width()).toFixed(0);
+                    let persent = (evt.pageX - slider.offset().left) / slider.width();
+                    this.sliderVal = (persent * 100).toFixed(0);
                 }
+            },
+            resetImg(){
+                // 无须传参 
+                Bus.$emit("reset-upload-img");
+                this.showDialog = false;
+            }
+        },
+        watch: {
+            sliderVal(val, oldVal){
+                let canvas = $("#fixCanvas")[0], ctx = canvas.getContext("2d");
+                let img = document.getElementById("thumbnailImg");
+
+                let persent = val / 100 + 1;
+                ctx.drawImage(img, 0, 0, $(canvas).height() * persent, $(canvas).width() * persent);
             }
         }
     }
