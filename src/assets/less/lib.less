@@ -130,3 +130,32 @@
         }
     }
 }
+
+.is-slider{
+    height: 5px;
+    background-color: #ececec;
+    position: relative;
+    .slider__bar{
+        background-color: @active-color;
+        width: 0%;
+        height: 100%;
+    }
+    .slider__btn{
+        width: 12px;
+        height: 12px;
+        border-radius: 100%;
+        position: absolute;
+        top: -4px;
+        background-color: @active-color;
+        cursor: pointer;
+        margin-left: 0;
+        &:hover{
+            width: 15px;
+            height: 15px;
+            top: -6px;
+        }
+    }
+    .slider__text{
+
+    }
+}

@@ -4,7 +4,7 @@
         <div class="select-main">
             <div class="main-item">
                 <img class="thumbnail-img" id="thumbnailImg" 
-                    :src="imgObject.url" alt="裁剪图片"
+                    :src="value.url" alt="裁剪图片"
                  />
                 <div class="item-setting">
                     <button class="setting-btn">更换</button>
@@ -29,7 +29,26 @@
                         @mousemove="fixImg"
                         @mouseup="fixImgEnd"
                     ></canvas>
-                    <div class="holder" id="holderBox"></div>
+                    <div class="holder" id="holderBox"
+                        @mousedown="isMoveHolder = true" 
+                        @mousemove="moveHolder"
+                        @mouseup="isMoveHolder = false"
+                    ></div>
+
+                    <!-- TODO 此处可为组件 -->
+                    <div class="is-slider" ref="sliderBar"
+                        @mousedown="isSlider = true"
+                        @mousemove="sliderMove"
+                        @mouseup="isSlider = false"
+                    >
+                        <!-- 占比 -->
+                        <div class="slider__bar" :style='"width:"+ sliderVal +"%"'></div>
+                        <!-- 拖动效果 -->
+                        <div class="slider__btn" 
+                            :style='"margin-left:"+ sliderVal +"%"'
+                        ></div>
+                        <div class="slider__text">{{ sliderVal }}%</div>
+                    </div>
                 </div>
                 <div class="footer">
                     <button class="is-button" @click="showDialog = false">取消</button>
@@ -44,12 +63,9 @@
     import $ from 'jquery';
     export default {
         name: "images-select",
+        props: ["value"], // v-model绑定值
         data() {
             return {
-                imgObject: {
-                    name: "img1.jpg", 
-                    url: require("img/upload/img1.jpg")
-                },
                 showDialog: false,
                 // 裁剪图片操作
                 isFixImg: false,
@@ -61,6 +77,11 @@
                         x: 0, y: 0
                     }
                 },
+                // 移动遮罩层
+                isMoveHolder: false,
+                // 滑动选择
+                sliderVal: 20,
+                isSlider: false
             }
         },
         mounted(){
@@ -114,6 +135,31 @@
                     y: evt.pageY
                 }
                 this.isFixImg = false;
+            },
+            moveHolder(evt){
+                evt.stopPropagation();
+
+                if( this.isMoveHolder ){
+
+                    console.log(111);
+                    // this.fixImgPos.end = {
+                    //     x: evt.pageX, y: evt.pageY
+                    // }
+                    let canvas = $("#fixCanvas");
+
+                    // $("#holderBox").css({
+                    //     left: evt.pageX + 20 - canvas.offset().left,
+                    //     top: evt.pageY + 20 - canvas.offset().top,
+                    // })
+                }
+            },
+            sliderMove(evt){
+                if( this.isSlider ){
+                    let slider = $(this.$refs.sliderBar);
+
+                    // TODO 保留N位数 step 可以在此设置
+                    this.sliderVal = ((evt.pageX - slider.offset().left) * 100 / slider.width()).toFixed(0);
+                }
             }
         }
     }
